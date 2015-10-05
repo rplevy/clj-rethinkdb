@@ -3,8 +3,7 @@
             [clojure.test :refer :all]
             [rethinkdb.query :as r]
             [rethinkdb.core :as core]
-            [rethinkdb.net :as net]
-            [rethinkdb.query.unsweetened :as unsweetened]))
+            [rethinkdb.net :as net]))
 
 (def test-db "cljrethinkdb_test")
 (def test-table :pokedex)
@@ -302,22 +301,19 @@
     (is (= [{:a {:foo "bar"}
              :b [1 2]}]
            (r/run (-> [{:foo "bar"}]
-                      (r/map (unsweetened/rethink-fn [::x]
+                      (r/map (r/func [::x]
                                {:a ::x
                                 :b (-> [1 2]
-                                       (r/map (unsweetened/rethink-fn [::x]
-                                                                      ::x)))})))
+                                       (r/map (r/func [::x] ::x)))})))
                   conn)))
     (is (= [{:a {:foo "bar"}
              :b [{:foo "bar"} {:foo "bar"}]}]
            (r/run (-> [{:foo "bar"}]
-                      (r/map (unsweetened/rethink-fn [::x]
-                                                     {:a ::x
+                      (r/map (r/func [::x]
+                               {:a ::x
                                 :b (-> [1 2]
-                                       (r/map (unsweetened/rethink-fn [::y]
-                                                                      ::x)))})))
+                                       (r/map (r/func [::y] ::x)))})))
                   conn)))))
-
 
 (deftest filter-with-default
   (with-open [conn (r/connect)]
