@@ -30,16 +30,14 @@
   Args is a vector of keywords. Term is a map produced by rqb/term.
   e.g. (func [::my-arg] term)"
   [args term]
-  (let [new-args (mapv #(vector :temp-var %) args)
-        new-replacements (zipmap args new-args)
-        new-terms (walk/postwalk-replace new-replacements term)]
-    (qb/term :FUNC [new-args new-terms])))
+  (qb/term :FUNC [args term]))
 
 #?(:clj (defmacro fn [args & [body]]
-          (let [new-args (into [] (clojure.core/map #(hash-map :temp-var (keyword %)) args))
+          (let [new-args (into [] (clojure.core/map
+                                   #(hash-map :temp-var (keyword %)) args))
                 new-replacements (zipmap args new-args)
                 new-terms (walk/postwalk-replace new-replacements body)]
-            (term :FUNC [new-args new-terms]))))
+            (func new-args new-terms))))
 
 ;;; Import connect
 
