@@ -27,10 +27,10 @@
   oftentimes it's necessary to have the added versatility of a
   definition that accepts pure data.
 
-  Args is a vector of keywords. Term is a map produced by rqb/term.
-  e.g. (func [::my-arg] term)"
-  [args term]
-  (qb/term :FUNC [args term]))
+  Args is a vector of keywords. Terms is a term map.
+  e.g. (func [::my-arg] terms)"
+  [args terms]
+  (term :FUNC [args terms]))
 
 #?(:clj (defmacro fn [args & [body]]
           (let [new-args (into [] (clojure.core/map
